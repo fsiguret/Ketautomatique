@@ -1,29 +1,39 @@
 setTimeout(init,5000);
-
-const callback = function (mutationList) {
-    const ketAuto = document.getElementsByClassName('css-o6eaa5 aled');
-
-    for(let mutation of mutationList) {
-        if(ketAuto[0] === undefined) {
-            init();
-        }
-    }
+let isKetAuto = false;
+function observe(target, options){
+    let observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+            const ketAuto = document.getElementsByClassName('css-o6eaa5 aled')[0]
+            if(mutation.type === "childList" && ketAuto === undefined) {
+                isKetAuto = false;
+                init();
+            }
+            if(mutation.type === 'characterData' && isKetAuto) {
+                updatePrice();
+            }
+        });
+    });
+    observer.observe(target, options);
 }
+
 function init() {
     const orderForm = document?.getElementsByName('orderForm');
     const divBtn = orderForm[0]?.getElementsByClassName('css-4cffwv')[1];
     const buyLong = divBtn?.getElementsByTagName('button')[0];
+    const buyShort = divBtn?.getElementsByTagName('button')[1];
 
+    if(buyLong && buyShort !== undefined) {
+        buyLong.textContent = "Acheter";
+        buyShort.textContent = "Vendre";
+    }
     const ketAuto = generateBtn('Kétauto', "css-o6eaa5 aled");
-    let interval
 
     divBtn?.insertBefore(ketAuto, buyLong);
 
     ketAuto.addEventListener('click', event => {
         event.preventDefault();
-
-        if (!interval) {
-            interval = setInterval(updatePrice,10);
+        if (!isKetAuto) {
+            isKetAuto = true;
             const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
             const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
             svg.setAttribute("viewBox", "0 0 512 512");
@@ -33,41 +43,29 @@ function init() {
             svg.classList.add("theLoop");
             ketAuto.textContent = '';
             ketAuto.appendChild(svg);
-
+            updatePrice();
         } else {
-            clearInterval(interval);
-            interval = null;
-            ketAuto.firstElementChild.remove();
+            isKetAuto = false;
+            ketAuto?.firstElementChild.remove();
             ketAuto.textContent = 'Kétauto';
         }
     });
 
-    const observer = new MutationObserver(callback);
-    const option = {childList: true};
-    observer.observe(document.body, option);
+    observe(document.body, { childList: true });
+    if (document.forms[0] !== undefined) {
+        observe(document.forms[0], { childList: true });
+    }
 }
 
+/**
+ *
+ */
 function updatePrice() {
-
     let currentPrice;
-    let inputToUpdate;
+    let target;
 
     const form = document.forms[0];
     const inputPrice = form.firstElementChild.getElementsByTagName('input')[0];
-
-    /**
-     * IF POPUP FOR LIMIT OR MARKET
-     */
-    const closePopup = document?.getElementsByClassName('css-1nmmmhf')[0];
-    const position = document.getElementsByName('position')[0];
-    let divClosePopup;
-    if(closePopup !== undefined) {
-        divClosePopup = closePopup.getElementsByClassName('css-gnqbje')[0];
-        inputToUpdate = divClosePopup.getElementsByTagName('input')[0];
-
-    } else if(position !== undefined) {
-        inputToUpdate = position.getElementsByClassName('css-1rw9s8f')[0]?.firstElementChild;
-    }
 
     /**
      * IF SWITCH OR SUBHEADER
@@ -75,25 +73,39 @@ function updatePrice() {
     const subHeader = document.getElementsByName('subheader')[0];
     const switchHead = document.getElementsByName('switch')[0];
     if(subHeader !== undefined) {
-        currentPrice = subHeader?.getElementsByClassName('draggableHandle')[0].textContent;
+        target = subHeader?.getElementsByClassName('draggableHandle')[0];
+        currentPrice = target.textContent;
+        observe(target, {characterData: true, attributes: false, childList: false, subtree: true});
+
     } else if(switchHead !== undefined) {
-        currentPrice = switchHead?.getElementsByClassName('showPrice')[0].textContent;
-
+        target = switchHead?.getElementsByClassName('showPrice')[0];
+        currentPrice = target.textContent;
+        observe(target, {characterData: true, attributes: false, childList: false, subtree: true});
     }
-
-    updateValue(inputToUpdate, currentPrice);
     updateValue(inputPrice, currentPrice);
-
 }
 
+/**
+ * Create a new HTMLButtonElement
+ * @param value - Value of the button to be generated
+ * @param style - className of the button
+ * @return {HTMLButtonElement}
+ */
 function generateBtn(value, style) {
     const newButton = document.createElement('button');
     const content = document.createTextNode(value);
+
     newButton.className = style;
     newButton.appendChild(content);
+
     return newButton;
 }
 
+/**
+ * Remove the old value attribute and setup a new value
+ * @param input - The input field that you want update
+ * @param currentPrice - The new value of the input field
+ */
 function updateValue(input, currentPrice) {
     if(input !== undefined) {
         input?.removeAttribute('value');
