@@ -94,11 +94,11 @@ function initNewBtn() {
  * @return {HTMLElement} target
  */
 function updatePrice() {
-  let currentPrice;
   let target;
 
   const form = document.forms[0];
-  const inputPrice = form.firstElementChild.getElementsByTagName("input")[0];
+  const lastPriceBtn =
+    form.firstElementChild.getElementsByClassName("css-y0i1k0")[0];
 
   /**
    * IF SWITCH OR SUBHEADER
@@ -107,13 +107,11 @@ function updatePrice() {
   const switchHead = document.getElementsByName("switch")[0];
   if (subHeader !== undefined) {
     target = subHeader?.getElementsByClassName("draggableHandle")[0];
-    currentPrice = target.textContent;
-    updateValue(inputPrice, currentPrice);
+    updateValue(lastPriceBtn);
     return target;
   } else if (switchHead !== undefined) {
     target = switchHead?.getElementsByClassName("showPrice")[0];
-    currentPrice = target.textContent;
-    updateValue(inputPrice, currentPrice);
+    updateValue(lastPriceBtn);
     return target;
   }
 }
@@ -136,15 +134,12 @@ function generateBtn(value, style) {
 }
 
 /**
- * Remove the old value attribute and setup a new value
+ * Trigger the last price button
  * @function updateValue
- * @param {HTMLElement} input - The input field that you want update
- * @param {String} currentPrice - The new value of the input field
+ * @param {HTMLElement} lastPriceBtn - The button last price for update the price.
  */
-function updateValue(input, currentPrice) {
-  if (input !== undefined) {
-    input?.removeAttribute("value");
-    input?.setAttribute("value", currentPrice.replaceAll(",", ""));
-    input.value = currentPrice.replaceAll(",", "");
+function updateValue(lastPriceBtn) {
+  if (lastPriceBtn) {
+    lastPriceBtn.click();
   }
 }
