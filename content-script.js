@@ -14,6 +14,7 @@ function observe(target, options) {
       if (mutation.type === "childList" && ketAuto === undefined) {
         isKetAuto = false;
         initNewBtn();
+        initObserverPrice();
       }
       if (mutation.type === "characterData" && isKetAuto) {
         updatePrice();
@@ -24,13 +25,20 @@ function observe(target, options) {
 }
 
 /**
- * Initialize the observer, and call the generate button function
+ * Initialize the observers, and call the generate button function
  * @function init
  */
 function init() {
   initNewBtn();
   observe(document.body, { childList: true });
+  initObserverPrice();
+}
 
+/**
+ * Initialize the observers for the price
+ * @function initObserverPrice
+ */
+function initObserverPrice() {
   if (document.forms[0] !== undefined) {
     observe(document.forms[0], { childList: true });
   }
@@ -107,6 +115,7 @@ function updatePrice() {
   const switchHead = document.getElementsByName("switch")[0];
   if (subHeader !== undefined) {
     target = subHeader?.getElementsByClassName("draggableHandle")[0];
+    console.log(lastPriceBtn);
     updateValue(lastPriceBtn);
     return target;
   } else if (switchHead !== undefined) {
