@@ -1,0 +1,23 @@
+.aled {
+    background-color: hsl(240, 81%, 63%) !important;
+}
+
+.aled:hover {
+    background-color: hsl(240, 81%, 65%) !important;
+}
+
+.theLoop {
+    width: 1em;
+    height: 1em;
+    color: white;
+    animation: 1s linear infinite inLoop;
+}
+
+@keyframes inLoop {
+    to {
+        transform: rotate(0);
+    }
+    from {
+        transform: rotate(360deg);
+    }
+}

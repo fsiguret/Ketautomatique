@@ -1,0 +1,20 @@
+{
+  "name": "KetaPrice",
+  "version": "0.0.1",
+  "manifest_version": 3,
+  "description": "Cliquer pour gagner des sous.",
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://*.binancefuture.com/*", "https://*.binance.com/*"],
+      "css": ["btnStyle.css"],
+      "js": ["content-script.js"]
+    }
+  ],
+  "icons": {
+    "128": "assets/bitcoin.png"
+  }
+}
