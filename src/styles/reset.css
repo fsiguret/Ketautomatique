@@ -1,0 +1,118 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+.flex {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+/**
+ * VARIABLES
+ */
+:root {
+  --font-color: #2f3542;
+  --font-color-light: #ffffff;
+  --primary-color: #bbdefb;
+  --secondary-background: #ffffff;
+  --secondary-color: #52a1ff;
+  --error-color: #ff4757;
+  --validation-color: #70a1ff;
+  --pendind-color: #ffa502;
+  --todo-color: #ff4757;
+  --done-color: #2ed573;
+}
+
+body {
+  background: var(--secondary-background);
+  font-family: "Roboto", sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #a4b0be;
+  color: var(--font-color);
+}
+
+/**
+ * POPUP.VUE HERE
+ */
+header {
+  flex-wrap: wrap;
+  justify-content: space-around;
+  background: var(--primary-color);
+}
+.nav {
+  width: 100%;
+}
+.nav > ul {
+  margin: 0;
+  padding: 0;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav > ul > li {
+  list-style: none;
+  margin: 0.5em;
+  background-color: var(--secondary-color);
+}
+
+.nav > ul > li:hover {
+  opacity: 95%;
+}
+
+.route {
+  padding: 1em;
+  font-weight: bold;
+  font-size: 1.6em;
+  text-decoration: none;
+  color: var(--font-color-light);
+  transition: opacity 1s linear;
+}
+
+.wallet > p,
+.stats > p {
+  text-align: center;
+}

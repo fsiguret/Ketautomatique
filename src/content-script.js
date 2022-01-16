@@ -115,7 +115,6 @@ function updatePrice() {
   const switchHead = document.getElementsByName("switch")[0];
   if (subHeader !== undefined) {
     target = subHeader?.getElementsByClassName("draggableHandle")[0];
-    console.log(lastPriceBtn);
     updateValue(lastPriceBtn);
     return target;
   } else if (switchHead !== undefined) {

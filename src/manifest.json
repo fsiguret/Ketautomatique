@@ -4,14 +4,25 @@
   "manifest_version": 3,
   "description": "Cliquer pour gagner des sous.",
   "permissions": [
+    "tabs",
     "webRequest",
     "activeTab",
     "scripting"
   ],
+  "action": {
+    "default_icon": {
+      "128": "assets/bitcoin.png"
+    },
+    "default_title": "Kétautomatique",
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
   "content_scripts": [
     {
       "matches": ["https://*.binancefuture.com/*", "https://*.binance.com/*"],
-      "css": ["btnStyle.css"],
+      "css": ["styles/btnStyle.css"],
       "js": ["content-script.js"]
     }
   ],
