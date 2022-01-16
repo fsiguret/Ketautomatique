@@ -4,6 +4,7 @@
   "manifest_version": 3,
   "description": "Cliquer pour gagner des sous.",
   "permissions": [
+    "webRequest",
     "activeTab",
     "scripting"
   ],
