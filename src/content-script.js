@@ -4,7 +4,7 @@ let isKetAuto = false;
 /**
  * Observe if the textContent of the current price and if the user change the body
  * @function observe
- * @param {HTMLElement} target - Target that you want observe
+ * @param {HTMLElement} target - Target that you want to observe
  * @param {Object} options - the MutationObserver options
  */
 function observe(target, options) {

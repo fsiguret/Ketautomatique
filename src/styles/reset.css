@@ -56,9 +56,9 @@ h6 {
 :root {
   --font-color: #2f3542;
   --font-color-light: #ffffff;
-  --primary-color: #bbdefb;
+  --primary-color: #30336b;
   --secondary-background: #ffffff;
-  --secondary-color: #52a1ff;
+  --secondary-color: #f0932b;
   --error-color: #ff4757;
   --validation-color: #70a1ff;
   --pendind-color: #ffa502;
@@ -67,12 +67,14 @@ h6 {
 }
 
 body {
-  background: var(--secondary-background);
+  background: var(--primary-color);
   font-family: "Roboto", sans-serif;
+  color: var(--font-color-light);
   margin: 0;
   padding: 0;
-  background: #a4b0be;
-  color: var(--font-color);
+}
+#app {
+  width: 600px;
 }
 
 /**
@@ -81,35 +83,27 @@ body {
 header {
   flex-wrap: wrap;
   justify-content: space-around;
+  position: fixed;
+  width: 100%;
   background: var(--primary-color);
 }
 .nav {
-  width: 100%;
-}
-.nav > ul {
-  margin: 0;
-  padding: 0;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.nav > ul > li {
-  list-style: none;
-  margin: 0.5em;
-  background-color: var(--secondary-color);
-}
-
-.nav > ul > li:hover {
-  opacity: 95%;
 }
 
 .route {
-  padding: 1em;
+  background: var(--secondary-color);
+  padding: 0.6em 1em;
+  margin: 1em;
   font-weight: bold;
   font-size: 1.6em;
+  letter-spacing: 0.1em;
   text-decoration: none;
   color: var(--font-color-light);
   transition: opacity 1s linear;
+  border-radius: 0.2em;
+}
+.route:hover {
+  opacity: 90%;
 }
 
 .wallet > p,
