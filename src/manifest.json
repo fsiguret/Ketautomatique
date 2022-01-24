@@ -7,7 +7,8 @@
     "tabs",
     "webRequest",
     "activeTab",
-    "scripting"
+    "scripting",
+    "notifications"
   ],
   "action": {
     "default_icon": {

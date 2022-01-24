@@ -1,86 +1,139 @@
 <script setup>
-import { onBeforeMount, ref } from "vue";
+import { onBeforeMount, onMounted, reactive, ref, toRaw } from "vue";
 import { useOrderTradeStore } from "../store/orderTradeStore.js";
+import { useAppStore } from "../store/AppStore.js";
+import { storeToRefs } from "pinia";
+import { getHistory } from "../js/fetchFunctions.js";
 
-const { addNewOrder } = useOrderTradeStore();
+const appStore = useAppStore();
+const orderStore = useOrderTradeStore();
 
-let orderHistory = ref({});
-let isLoading = ref(true);
+const { isLoading } = storeToRefs(appStore);
+const { historyOrders, dayGain } = storeToRefs(orderStore);
+
+const { switchLoading } = useAppStore();
+const { sortByDate, setHistoryOrders, filterOrder } = useOrderTradeStore();
 
 onBeforeMount(async () => {
-  orderHistory.value = await fetch("http://localhost:3000/api/order/").then(
-    (response) => {
-      isLoading.value = !isLoading.value;
-      return response.json();
-    }
-  );
+  await getHistory()
+    .then((res) => {
+      orderStore.$reset();
+      sortByDate(res);
+      setHistoryOrders(res);
+      filterOrder("7");
+    })
+    .then(() => {
+      if (isLoading.value) {
+        switchLoading();
+      }
+    })
+    .catch((err) => console.log(err));
 });
 </script>
 <template>
-  <h1>Historique</h1>
-  <svg v-if="isLoading"><use href="/img/sprites.svg#loop"></use></svg>
-  <div v-else>
-    <div class="flex labels">
-      <p>Symbole</p>
-      <p>Date</p>
-      <p>Commission</p>
-      <p>Prix</p>
-      <p>Quantité</p>
-      <p>PNL</p>
-      <p>Position</p>
+  <section class="flex">
+    <h1>Historique</h1>
+    <svg v-if="isLoading">
+      <use href="/img/sprites.svg#loop"></use>
+    </svg>
+    <div class="history" v-else-if="historyOrders.length > 0">
+      <div class="flex filters">
+        <p @click="filterOrder('1')">1 J</p>
+        <p @click="filterOrder('7')">7 J</p>
+        <p @click="filterOrder('1m')">1 M</p>
+        <p @click="filterOrder('all')">Tout</p>
+      </div>
+      <div class="flex labels">
+        <p>Symbole</p>
+        <p>Date</p>
+        <p>Commission</p>
+        <p>Prix</p>
+        <p>Quantité</p>
+        <p>PNL</p>
+        <p>Position</p>
+      </div>
+      <article class="flex article" v-for="order in historyOrders" :key="order">
+        <h2 class="article__title">{{ order.symbol }}</h2>
+        <p class="article__date">{{ order.date }}</p>
+        <p class="article__commission">
+          {{ order.commission.toFixed(2) }} {{ order.commissionAsset }}
+        </p>
+        <p class="article__price">{{ order.price }}</p>
+        <p class="article__qty">{{ order.qty }}</p>
+        <p class="article__pnl" :class="{ 'text-danger': isNegative }">
+          {{ order.realizedPnl.toFixed(2) }}
+        </p>
+        <p class="article__side">{{ order.side }}</p>
+      </article>
     </div>
-    <article
-      class="flex article"
-      v-for="order in orderHistory.orders"
-      :key="order"
-    >
-      <h2 class="article__title">{{ order.symbol }}</h2>
-      <p class="article__date">{{ order.time }}</p>
-      <p class="article__commission">
-        {{ order.commission }} {{ order.commissionAsset }}
-      </p>
-      <p class="article__price">{{ order.price }}</p>
-      <p class="article__qty">{{ order.qty }}</p>
-      <p class="article__pnl">{{ order.realizedPnl }}</p>
-      <p class="article__side">{{ order.side }}</p>
-    </article>
-  </div>
+    <div class="noHistory" v-else>
+      <p>Vous n'avez pas d'historique !</p>
+    </div>
+  </section>
 </template>
 <style scoped lang="scss">
-h1 {
-  padding-top: 4em;
-  font-size: 3em;
-  width: 100%;
-  text-align: center;
-}
-svg {
-  margin: 3em auto;
-  color: var(--secondary-color);
-  animation: inLoop 1s linear infinite;
-}
-.labels {
-  margin: 1em;
-  padding: 0.8em;
-  justify-content: space-around;
-  > p {
-    width: 14%;
+section {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  h1 {
+    padding-top: 4em;
+    font-size: 3em;
+    width: 100%;
     text-align: center;
   }
-}
-.article {
-  background: var(--secondary-color);
-  padding: 0.8em;
-  border-radius: 0.2em;
-  margin: 1em;
-  justify-content: space-around;
-  > p {
-    width: 14%;
-    text-align: center;
+  svg {
+    margin: 3em auto;
+    color: var(--secondary-color);
+    animation: inLoop 1s linear infinite;
   }
-  &__tittle {
-    font-size: 1.5em;
+  .history {
+    width: 100%;
+    .labels {
+      margin: 1em;
+      padding: 0.8em;
+      justify-content: space-around;
+      > p {
+        width: 14%;
+        text-align: center;
+      }
+    }
+    .filters {
+      p {
+        cursor: pointer;
+        margin: 0 0.5em;
+        padding: 0.2em 0.6em;
+        transition: background-color 0.5ms linear;
+        text-align: center;
+        border-radius: 0.2em;
+        &:hover {
+          background-color: var(--secondary-color);
+        }
+      }
+    }
+    .article {
+      background: var(--secondary-color);
+      padding: 0.8em;
+      border-radius: 0.2em;
+      margin: 1em;
+      justify-content: space-around;
+      > p {
+        width: 14%;
+        text-align: center;
+      }
+      &__tittle {
+        font-size: 1.5em;
+      }
+      &__date {
+      }
+    }
   }
-  &__date {
+
+  .noHistory {
+    margin-top: 10em;
+    p {
+      font-size: 2em;
+    }
   }
 }
 

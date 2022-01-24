@@ -1,6 +1,12 @@
 import { defineStore } from "pinia";
 
 export const useAppStore = defineStore("application", {
-  state: () => ({}),
-  actions: {},
+  state: () => ({
+    isLoading: true,
+  }),
+  actions: {
+    switchLoading() {
+      this.isLoading = !this.isLoading;
+    },
+  },
 });
