@@ -22,6 +22,11 @@ onMounted(async () => {
       setAccountInfos(res);
     })
     .catch((err) => console.log(err));
+
+  await refresh();
+});
+
+async function refresh() {
   await refreshHistory()
     .then(async (res) => {
       if (res.ok) {
@@ -34,7 +39,7 @@ onMounted(async () => {
       }
     })
     .catch((err) => console.log(err));
-});
+}
 </script>
 <template>
   <header class="flex">
@@ -56,7 +61,12 @@ onMounted(async () => {
     <div class="stats">
       <h2 class="stats__title">Aujourd'hui</h2>
       <p id="gain" class="stats__text">
-        <span class="bold">{{ dayGain.toFixed(2) }}</span> USDT
+        <span
+          class="bold"
+          :class="{ profit: dayGain >= 0, 'text-danger': dayGain < 0 }"
+          >{{ dayGain.toFixed(2) }}</span
+        >
+        USDT
       </p>
     </div>
   </header>

@@ -52,24 +52,32 @@ h6 {
 .bold {
   font-weight: bold;
 }
+.text-danger {
+  color: var(--error-color);
+}
+.profit {
+  color: var(--validation-color);
+}
+.active {
+  background-color: var(--primary-color);
+  -webkit-box-shadow: 3px 4px 5px 0 var(--primary-color);
+  box-shadow: 3px 4px 5px 0 var(--primary-color);
+}
 /**
  * VARIABLES
  */
 :root {
-  --font-color: #2f3542;
   --font-color-light: #ffffff;
-  --primary-color: #30336b;
-  --secondary-background: #ffffff;
-  --secondary-color: #f0932b;
   --error-color: #ff4757;
-  --validation-color: #70a1ff;
-  --pendind-color: #ffa502;
-  --todo-color: #ff4757;
-  --done-color: #2ed573;
+  --validation-color: #7cb342;
+  --primary-color: #3d3d3d;
+  --secondary-color: #7d5fff;
+  --scrollbar-track: #575757;
+  --scrollbar-thumb-hover: #8c72fc;
 }
 
 body {
-  background: var(--primary-color);
+  background: var(--secondary-color);
   font-family: "Roboto", sans-serif;
   color: var(--font-color-light);
   margin: 0;
@@ -78,16 +86,38 @@ body {
 #app {
   width: 600px;
 }
-
+::-webkit-scrollbar {
+  width: 1em;
+  background: var(--primary-color);
+}
+::-webkit-scrollbar-track {
+  border-radius: 100vw;
+  margin-block: 0.5em;
+  background: var(--scrollbar-track);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--secondary-color);
+  width: 0.5em;
+  height: 5em;
+  border-radius: 100vw;
+  border: solid 2px var(--scrollbar-track);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
 /**
  * POPUP.VUE HERE
  */
 header {
+  padding-bottom: 0.8em;
   flex-wrap: wrap;
   justify-content: space-around;
   position: fixed;
   width: 100%;
   background: var(--primary-color);
+  z-index: 10;
+  -webkit-box-shadow: 0 4px 7px 0 var(--primary-color);
+  box-shadow: 0 4px 7px 0 var(--primary-color);
 }
 .nav {
 }
@@ -101,11 +131,10 @@ header {
   letter-spacing: 0.1em;
   text-decoration: none;
   color: var(--font-color-light);
-  transition: opacity 1s linear;
   border-radius: 0.2em;
 }
 .route:hover {
-  opacity: 90%;
+  animation: upButton 100ms linear forwards;
 }
 
 .wallet > p,
@@ -113,4 +142,17 @@ header {
 .stats > p,
 .stats > h2 {
   text-align: center;
+}
+
+@keyframes upButton {
+  from {
+    -webkit-box-shadow: 0 0 0 0 var(--secondary-color);
+    box-shadow: 0 0 0 0 var(--secondary-color);
+    transform: scale(1);
+  }
+  to {
+    -webkit-box-shadow: 3px 4px 10px 0 var(--primary-color);
+    box-shadow: 3px 4px 10px 0 var(--primary-color);
+    transform: scale(1.025);
+  }
 }
