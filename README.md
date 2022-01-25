@@ -1,7 +1,27 @@
-# Vue 3 + Vite
+# Kétautomatique Chrome extension
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+This is a Chrome extension for give you statistics from your Binance Future account. Work only with the [Kétautomatique API](https://github.com/fsiguret/ketautomatique-api)
 
-## Recommended IDE Setup
+---------------------------
 
-- [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar)
+## Setup
+
+````shell
+git init 
+git clone git@github.com:fsiguret/ketautomatique.git
+npm install
+````
+
+After that you need to build the extension.
+
+````shell
+npm run build
+````
+
+Now, add your new extension in Chrome.
+
+Tools > Extensions 
+
+Check the developer mode et click on "Load the unpacked extension".
+
+Select the dist/ folder created above.
