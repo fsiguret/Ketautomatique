@@ -113,8 +113,8 @@ section {
         }
       }
       button {
-        transform: none;
         border: none;
+        cursor: pointer;
       }
     }
     p {

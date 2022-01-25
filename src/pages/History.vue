@@ -60,6 +60,11 @@ async function refresh() {
     .catch((err) => console.log(err));
 }
 
+/**
+ * Set the class "active" to the current button
+ * @function active
+ * @param event
+ */
 function active(event) {
   const filters = document.getElementById("filters");
 
@@ -132,7 +137,8 @@ function active(event) {
         <h2 class="article__title">{{ order.symbol }}</h2>
         <p class="article__date">{{ order.date }}</p>
         <p class="article__commission">
-          {{ order.commission.toFixed(2) }} {{ order.commissionAsset }}
+          {{ order.commission.toFixed(2) }}
+          {{ order.commissionAsset }}
         </p>
         <p class="article__price">{{ order.price }}</p>
         <p class="article__qty">{{ order.qty }}</p>
