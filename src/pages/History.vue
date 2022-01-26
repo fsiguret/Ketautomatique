@@ -8,10 +8,10 @@ import { getHistory, refreshHistory } from "../js/fetchFunctions.js";
 const appStore = useAppStore();
 const orderStore = useOrderTradeStore();
 
-const { isLoading } = storeToRefs(appStore);
+const { isLoading, isRefresh } = storeToRefs(appStore);
 const { historyOrders } = storeToRefs(orderStore);
 
-const { switchLoading } = useAppStore();
+const { switchLoading, switchRefresh } = useAppStore();
 const { sortByDate, setHistoryOrders, filterOrder } = useOrderTradeStore();
 
 onBeforeMount(async () => {
@@ -29,35 +29,41 @@ onBeforeMount(async () => {
     })
     .catch((err) => console.log(err));
 });
-async function refresh() {
-  let svg = document.querySelector(".refresh__svg").animate(
-    [
-      {
-        transform: "rotate(360deg)",
-      },
-      {
-        transform: "rotate(0deg)",
-      },
-    ],
-    {
-      duration: 500,
-      iterations: Infinity,
-    }
-  );
 
-  await refreshHistory()
-    .then(async (res) => {
-      if (res.ok) {
-        await getHistory().then((res) => {
-          orderStore.$reset();
-          sortByDate(res);
-          setHistoryOrders(res);
-          filterOrder("7");
-        });
+async function refresh() {
+  if (!isRefresh.value) {
+    switchRefresh();
+    let svg = document.querySelector(".refresh__svg").animate(
+      [
+        {
+          transform: "rotate(360deg)",
+        },
+        {
+          transform: "rotate(0deg)",
+        },
+      ],
+      {
+        duration: 500,
+        iterations: Infinity,
       }
-      svg.cancel();
-    })
-    .catch((err) => console.log(err));
+    );
+
+    await refreshHistory()
+      .then(async (res) => {
+        if (res.ok) {
+          await getHistory().then((res) => {
+            orderStore.$reset();
+            sortByDate(res);
+            setHistoryOrders(res);
+            filterOrder("7");
+            switchRefresh();
+          });
+        }
+
+        svg.cancel();
+      })
+      .catch((err) => console.log(err));
+  }
 }
 
 /**
@@ -77,10 +83,7 @@ function active(event) {
 <template>
   <section class="flex">
     <h1>Historique</h1>
-    <svg class="loading" v-if="isLoading">
-      <use href="/img/sprites.svg#loop"></use>
-    </svg>
-    <div class="history" v-else-if="historyOrders.length > 0">
+    <div class="selection">
       <div id="filters" class="flex filters">
         <p
           class="filter"
@@ -118,12 +121,17 @@ function active(event) {
         >
           Tout
         </p>
-        <div @click="refresh" class="refresh">
+        <div @click="refresh($event)" class="refresh">
           <svg class="refresh__svg">
             <use href="/img/sprites.svg#loop"></use>
           </svg>
         </div>
       </div>
+    </div>
+    <svg class="loading" v-if="isLoading">
+      <use href="/img/sprites.svg#loop"></use>
+    </svg>
+    <div class="history" v-else-if="historyOrders.length > 0">
       <div class="flex labels">
         <p>Symbole</p>
         <p>Date</p>
@@ -184,17 +192,8 @@ section {
     color: var(--primary-color);
     animation: inLoop 1s linear infinite;
   }
-  .history {
+  .selection {
     width: 100%;
-    .labels {
-      margin: 1em;
-      padding: 0.8em;
-      justify-content: space-around;
-      > p {
-        width: 14%;
-        text-align: center;
-      }
-    }
     .filters {
       p {
         cursor: pointer;
@@ -210,6 +209,7 @@ section {
           box-shadow: 3px 4px 10px 0 var(--primary-color);
         }
       }
+
       .refresh {
         background-color: var(--primary-color);
         transform: scaleX(-1);
@@ -218,18 +218,34 @@ section {
         border-radius: 0.2em;
         -webkit-box-shadow: -3px 4px 10px 0 var(--primary-color);
         box-shadow: -3px 4px 10px 0 var(--primary-color);
+
         &:hover svg {
           animation: inLoop 500ms infinite linear;
         }
+
         &__svg {
           width: 16px;
           height: 16px;
         }
+
         &:last-child {
           margin: 0 2em 0 auto;
         }
       }
     }
+  }
+  .history {
+    width: 100%;
+    .labels {
+      margin: 1em;
+      padding: 0.8em;
+      justify-content: space-around;
+      > p {
+        width: 14%;
+        text-align: center;
+      }
+    }
+
     .article {
       background: var(--primary-color);
       padding: 0.8em;
@@ -249,7 +265,6 @@ section {
       }
     }
   }
-
   .noHistory {
     margin-top: 10em;
     p {
