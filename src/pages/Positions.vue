@@ -9,8 +9,9 @@ let quantitySmooth;
 
 function priceSmoothing() {
   const resultToCheck =
-    (price * quantityPrice + priceSmooth * quantitySmooth) /
-    (quantityPrice + quantitySmooth);
+    (parseFloat(price) * parseFloat(quantityPrice) +
+      parseFloat(priceSmooth) * parseFloat(quantitySmooth)) /
+    (parseFloat(quantityPrice) + parseFloat(quantitySmooth));
 
   if (resultToCheck >= 0) {
     result.value = resultToCheck;
