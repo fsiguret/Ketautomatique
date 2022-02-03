@@ -6,11 +6,11 @@ export const useOrderTradeStore = defineStore("orderTrade", {
     weekGain: 0,
     monthGain: 0,
     allGain: 0,
+    yearHistory: new Set(),
     saveHistory: {},
     historyOrders: {},
   }),
   actions: {
-    setWallet() {},
     setHistoryOrders(orders) {
       this.historyOrders = orders;
       this.saveHistory = orders;
@@ -19,11 +19,20 @@ export const useOrderTradeStore = defineStore("orderTrade", {
       this.calculateMonthGain();
       this.calculateAllGain();
     },
+
+    setYearHistory(year) {
+      this.historyOrders.forEach((order) => {
+        if (new Date(order.time).getFullYear() === year) {
+          this.yearHistory.add(order);
+        }
+      });
+    },
     calculateAllGain() {
       this.saveHistory.forEach((order) => {
         this.allGain = this.allGain + (order.realizedPnl + -order.commission);
       });
     },
+
     calculateMonthGain() {
       const currentDate = new Date().getTime();
 
@@ -36,6 +45,7 @@ export const useOrderTradeStore = defineStore("orderTrade", {
           this.monthGain + (order.realizedPnl + -order.commission);
       });
     },
+
     calculateWeekGain() {
       const offset = (new Date().getDay() + 6) % 7;
       const weekDay = new Date(
@@ -52,6 +62,7 @@ export const useOrderTradeStore = defineStore("orderTrade", {
         this.weekGain = this.weekGain + (order.realizedPnl + -order.commission);
       });
     },
+
     calculateDayGain() {
       const currentDate = new Date().getTime();
       const dayHistory = this.saveHistory.filter(
@@ -63,11 +74,13 @@ export const useOrderTradeStore = defineStore("orderTrade", {
         this.dayGain = this.dayGain + (order.realizedPnl + -order.commission);
       });
     },
+
     sortByDate(orders) {
       orders.sort((a, b) => {
         return b.time - a.time;
       });
     },
+
     filterOrder(filter) {
       const currentDate = new Date().getTime();
       switch (filter) {
@@ -87,7 +100,10 @@ export const useOrderTradeStore = defineStore("orderTrade", {
         case "1m":
           this.historyOrders = this.saveHistory.filter(
             (key) =>
-              new Date(key.time).getMonth() === new Date(currentDate).getMonth()
+              new Date(key.time).getMonth() ===
+                new Date(currentDate).getMonth() &&
+              new Date(key.time).getFullYear() ===
+                new Date(currentDate).getFullYear()
           );
           break;
         case "all":
