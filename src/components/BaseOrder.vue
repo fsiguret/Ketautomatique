@@ -36,13 +36,14 @@ defineProps({
 
 <style scoped lang="scss">
 .article {
-  background: var(--primary-color);
+  background: var(--secondary-color);
   padding: 0.8em;
   border-radius: 0.2em;
   margin: 1em;
   justify-content: space-around;
-  -webkit-box-shadow: 3px 4px 10px 0 var(--primary-color);
-  box-shadow: 3px 4px 10px 0 var(--primary-color);
+
+  -webkit-box-shadow: 1px 1px 5px 0 var(--secondary-color);
+  box-shadow: 1px 1px 5px 0 var(--secondary-color);
   > p {
     width: 14%;
     text-align: center;

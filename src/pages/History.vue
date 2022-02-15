@@ -38,10 +38,14 @@ onBeforeMount(async () => {
     <h1>Historique</h1>
     <div class="selection">
       <div id="filters" class="flex filters">
-        <BaseFilter :label="'1 J'" :filter="'1'" />
-        <BaseFilter :label="'7 J'" :filter="'7'" />
-        <BaseFilter :label="'1 M'" :filter="'1m'" />
-        <BaseFilter :label="'All'" :filter="'all'" />
+        <BaseFilter :label="'1 J'" @click="filterOrder('1')" />
+        <BaseFilter
+          :label="'7 J'"
+          @click="filterOrder('7')"
+          :activeDefault="true"
+        />
+        <BaseFilter :label="'1 M'" @click="filterOrder('1m')" />
+        <BaseFilter :label="'Tout'" @click="filterOrder('all')" />
         <RefreshButton />
       </div>
     </div>
@@ -79,7 +83,7 @@ section {
   }
   .loading {
     margin: 3em auto;
-    color: var(--primary-color);
+    color: var(--third-color);
     animation: inLoop 1s linear infinite;
   }
   .selection {

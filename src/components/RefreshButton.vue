@@ -55,14 +55,15 @@ async function refresh() {
 
 <style scoped lang="scss">
 .refresh {
-  background-color: var(--primary-color);
+  background-color: var(--third-color);
   transform: scaleX(-1);
   cursor: pointer;
   margin: 0 2em 0 auto;
   padding: 0.5em;
   border-radius: 0.2em;
-  -webkit-box-shadow: -3px 4px 10px 0 var(--primary-color);
-  box-shadow: -3px 4px 10px 0 var(--primary-color);
+  -webkit-box-shadow: -1px 1px 10px 0 var(--third-color);
+  box-shadow: -1px 1px 10px 0 var(--third-color);
+
   &__svg {
     width: 16px;
     height: 16px;

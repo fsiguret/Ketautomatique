@@ -1,10 +1,7 @@
 <script setup>
-import { useOrderTradeStore } from "../store/orderTradeStore.js";
-
-const { filterOrder } = useOrderTradeStore();
 defineProps({
   label: String,
-  filter: String,
+  activeDefault: Boolean,
 });
 
 /**
@@ -22,13 +19,7 @@ function active(event) {
 }
 </script>
 <template>
-  <p
-    class="filter"
-    @click="
-      filterOrder(filter);
-      active($event);
-    "
-  >
+  <p class="filter" :class="{ active: activeDefault }" @click="active($event)">
     {{ label }}
   </p>
 </template>
@@ -43,9 +34,9 @@ function active(event) {
   border-radius: 0.2em;
 
   &:hover {
-    background-color: var(--primary-color);
-    -webkit-box-shadow: 3px 4px 10px 0 var(--primary-color);
-    box-shadow: 3px 4px 10px 0 var(--primary-color);
+    background-color: var(--third-color);
+    -webkit-box-shadow: 1px 1px 5px 0 var(--third-color);
+    box-shadow: 1px 1px 5px 0 var(--third-color);
   }
 }
 </style>

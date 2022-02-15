@@ -4,7 +4,7 @@ import Gains from "../components/Gains.vue";
 import GainHistory from "../components/GainHistory.vue";
 </script>
 <template>
-  <section>
+  <section class="stats">
     <h1>Stats</h1>
     <Wallet />
     <Gains />
@@ -13,7 +13,7 @@ import GainHistory from "../components/GainHistory.vue";
 </template>
 
 <style scoped lang="scss">
-section {
+.stats {
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -24,13 +24,13 @@ section {
     text-align: center;
     text-transform: uppercase;
   }
-  article {
-    background-color: var(--primary-color);
+  section {
+    background-color: var(--secondary-color);
     border-radius: 0.2em;
     padding: 1em;
     margin: 2em;
-    -webkit-box-shadow: 3px 4px 10px 0 var(--primary-color);
-    box-shadow: 3px 4px 10px 0 var(--primary-color);
+    -webkit-box-shadow: 1px 1px 10px 0 var(--secondary-color);
+    box-shadow: 1px 1px 10px 0 var(--secondary-color);
   }
 }
 </style>

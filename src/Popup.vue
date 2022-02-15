@@ -31,7 +31,6 @@ async function refresh() {
     .then(async (res) => {
       if (res.ok) {
         await getHistory().then((res) => {
-          orderStore.$reset();
           sortByDate(res);
           setHistoryOrders(res);
           filterOrder("7");

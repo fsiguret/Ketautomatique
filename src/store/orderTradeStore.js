@@ -6,9 +6,29 @@ export const useOrderTradeStore = defineStore("orderTrade", {
     weekGain: 0,
     monthGain: 0,
     allGain: 0,
-    yearHistory: new Set(),
+    historyGain: new Set(),
     saveHistory: {},
     historyOrders: {},
+    monthsGains: {
+      0: 0,
+      1: 0,
+      2: 0,
+      3: 0,
+      4: 0,
+      5: 0,
+      6: 0,
+      7: 0,
+      8: 0,
+      9: 0,
+      10: 0,
+      11: 0,
+    },
+    weeksGains: {},
+    daysGains: {},
+    yearGains: 0,
+    monthHistory: true,
+    weekHistory: false,
+    dayHistory: false,
   }),
   actions: {
     setHistoryOrders(orders) {
@@ -19,20 +39,58 @@ export const useOrderTradeStore = defineStore("orderTrade", {
       this.calculateMonthGain();
       this.calculateAllGain();
     },
-
-    setYearHistory(year) {
-      this.historyOrders.forEach((order) => {
-        if (new Date(order.time).getFullYear() === year) {
-          this.yearHistory.add(order);
+    setGainHistory() {
+      this.saveHistory.forEach((order) => {
+        if (
+          new Date(order.time).getFullYear() ===
+          new Date(Date.now()).getFullYear()
+        ) {
+          this.historyGain.add(order);
+        }
+      });
+    },
+    gainPerYear() {
+      this.historyGain.forEach((order) => {
+        this.yearGains += order.realizedPnl + -order.commission;
+      });
+    },
+    gainPerMonth() {
+      this.historyGain.forEach((order) => {
+        const monthOrder = new Date(order.time).getMonth();
+        this.monthsGains[monthOrder] += order.realizedPnl + -order.commission;
+      });
+    },
+    gainPerWeek() {
+      this.historyGain.forEach((order) => {
+        const currentDate = new Date(order.time);
+        const startYear = new Date(currentDate.getFullYear(), 0, 1);
+        const numberOfDays = Math.floor(
+          (currentDate - startYear) / (24 * 60 * 60 * 1000)
+        );
+        const currentWeek = Math.ceil(
+          (currentDate.getDay() + 1 + numberOfDays) / 7
+        );
+        if (this.weeksGains[currentWeek]) {
+          this.weeksGains[currentWeek] += order.realizedPnl + -order.commission;
+        } else {
+          this.weeksGains[currentWeek] = order.realizedPnl + -order.commission;
+        }
+      });
+    },
+    gainPerDay() {
+      this.historyGain.forEach((order) => {
+        if (this.daysGains[order.date]) {
+          this.daysGains[order.date] += order.realizedPnl + -order.commission;
+        } else {
+          this.daysGains[order.date] = order.realizedPnl + -order.commission;
         }
       });
     },
     calculateAllGain() {
       this.saveHistory.forEach((order) => {
-        this.allGain = this.allGain + (order.realizedPnl + -order.commission);
+        this.allGain += order.realizedPnl + -order.commission;
       });
     },
-
     calculateMonthGain() {
       const currentDate = new Date().getTime();
 
@@ -41,8 +99,7 @@ export const useOrderTradeStore = defineStore("orderTrade", {
           new Date(key.time).getMonth() === new Date(currentDate).getMonth()
       );
       monthHistory.forEach((order) => {
-        this.monthGain =
-          this.monthGain + (order.realizedPnl + -order.commission);
+        this.monthGain += order.realizedPnl + -order.commission;
       });
     },
 
@@ -59,7 +116,7 @@ export const useOrderTradeStore = defineStore("orderTrade", {
       );
 
       weekHistory.forEach((order) => {
-        this.weekGain = this.weekGain + (order.realizedPnl + -order.commission);
+        this.weekGain += order.realizedPnl + -order.commission;
       });
     },
 
@@ -71,7 +128,7 @@ export const useOrderTradeStore = defineStore("orderTrade", {
           new Date(currentDate).toDateString()
       );
       dayHistory.forEach((order) => {
-        this.dayGain = this.dayGain + (order.realizedPnl + -order.commission);
+        this.dayGain += order.realizedPnl + -order.commission;
       });
     },
 
@@ -108,6 +165,22 @@ export const useOrderTradeStore = defineStore("orderTrade", {
           break;
         case "all":
           this.historyOrders = this.saveHistory;
+          break;
+        case "month":
+          this.monthHistory = true;
+          this.weekHistory = false;
+          this.dayHistory = false;
+          break;
+        case "week":
+          this.monthHistory = false;
+          this.weekHistory = true;
+          this.dayHistory = false;
+          break;
+        case "day":
+          this.monthHistory = false;
+          this.weekHistory = false;
+          this.dayHistory = true;
+          break;
       }
     },
   },

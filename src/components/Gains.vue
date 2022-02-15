@@ -3,11 +3,10 @@ import { storeToRefs } from "pinia";
 import { useOrderTradeStore } from "../store/orderTradeStore.js";
 const orderStore = useOrderTradeStore();
 
-const { dayGain, weekGain, monthGain, allGain, historyOrders } =
-  storeToRefs(orderStore);
+const { dayGain, weekGain, monthGain, allGain } = storeToRefs(orderStore);
 </script>
 <template>
-  <article class="gain flex">
+  <section class="gain flex">
     <h2 class="gain__tittle">Vos gains</h2>
     <p>
       Aujourd'hui
@@ -45,7 +44,7 @@ const { dayGain, weekGain, monthGain, allGain, historyOrders } =
       >
       USDT
     </p>
-  </article>
+  </section>
 </template>
 
 <style scoped lang="scss">

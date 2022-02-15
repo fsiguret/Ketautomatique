@@ -6,7 +6,7 @@ const accountStore = useAccountStore();
 const { accountInfos } = storeToRefs(accountStore);
 </script>
 <template>
-  <article class="wallet flex">
+  <section class="wallet flex">
     <h2 class="wallet__tittle">Vos portefeuilles</h2>
     <p v-for="asset in accountInfos.assets" :key="asset">
       <span
@@ -19,7 +19,7 @@ const { accountInfos } = storeToRefs(accountStore);
       >
       {{ asset.asset }}
     </p>
-  </article>
+  </section>
 </template>
 
 <style scoped lang="scss">

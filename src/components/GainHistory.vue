@@ -1,89 +1,107 @@
 <script setup>
-import { storeToRefs } from "pinia";
+import BaseFilter from "./BaseFilter.vue";
 import { useOrderTradeStore } from "../store/orderTradeStore.js";
-import { useAppStore } from "../store/AppStore.js";
+import { storeToRefs } from "pinia";
+import { onBeforeMount } from "vue";
+const {
+  filterOrder,
+  setGainHistory,
+  gainPerMonth,
+  gainPerWeek,
+  gainPerDay,
+  gainPerYear,
+} = useOrderTradeStore();
 const orderStore = useOrderTradeStore();
-const appStore = useAppStore();
-const { setYearHistory } = useOrderTradeStore();
-const { isMonth, isWeekday, isDay } = storeToRefs(appStore);
-const { historyOrders } = storeToRefs(orderStore);
+const {
+  monthsGains,
+  weeksGains,
+  daysGains,
+  monthHistory,
+  weekHistory,
+  dayHistory,
+  yearGains,
+} = storeToRefs(orderStore);
 
-const years = new Set();
-function setupYear() {
-  historyOrders.value.forEach((order) => {
-    const orderDate = new Date(order.time).getFullYear();
-    years.add(orderDate);
-  });
-  setYearHistory(new Date().getFullYear());
-}
-function showHistory(event) {
-  setYearHistory(parseInt(event.target.textContent));
-  switchFilters("month");
-}
-function switchFilters(filter) {
-  switch (filter) {
-    case "month":
-  }
-}
-setupYear();
+onBeforeMount(() => {
+  setGainHistory();
+  gainPerMonth();
+  gainPerWeek();
+  gainPerDay();
+  gainPerYear();
+});
 </script>
 <template>
-  <article class="gainHistory flex">
+  <section class="gainHistory flex">
     <h2 class="gainHistory__tittle">Historique des gains</h2>
-    <ul class="gainHistory__years flex">
-      <li v-for="year in years" :key="year" @click="showHistory($event)">
-        {{ year }}
-      </li>
-    </ul>
-    <ul class="gainHistory__filter flex">
-      <li @click="switchFilters('month')">Mois</li>
-      <li @click="switchFilters('weekday')">Semaines</li>
-      <li @click="switchFilters('day')">Jours</li>
-    </ul>
-
-    <table v-if="isMonth">
-      <thead>
-        <tr>
-          <th>Mois</th>
-          <th>Gains</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Janvier</td>
-          <td>+ 150 USDT</td>
-        </tr>
-      </tbody>
-    </table>
-    <table v-if="isWeekday">
-      <thead>
-        <tr>
-          <th>Semaines</th>
-          <th>Gains</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Semaine 1</td>
-          <td>+ 150 USDT</td>
-        </tr>
-      </tbody>
-    </table>
-    <table v-if="isDay">
-      <thead>
-        <tr>
-          <th>Jours</th>
-          <th>Gains</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Lundi</td>
-          <td>+ 150 USDT</td>
-        </tr>
-      </tbody>
-    </table>
-  </article>
+    <div id="filters" class="flex filters">
+      <BaseFilter
+        :label="'Mois'"
+        @click="filterOrder('month')"
+        :activeDefault="true"
+      />
+      <BaseFilter :label="'Semaines'" @click="filterOrder('week')" />
+      <BaseFilter :label="'Jours'" @click="filterOrder('day')" />
+    </div>
+    <div class="yearGain">
+      <p>
+        Cette Année :
+        <span
+          :class="{
+            profit: parseFloat(yearGains) >= 0,
+            'text-danger': parseFloat(yearGains) < 0,
+          }"
+          >{{ yearGains.toFixed(2) }}
+        </span>
+        USDT
+      </p>
+    </div>
+    <article class="article" v-if="monthHistory">
+      <div v-for="(month, index) in monthsGains" :key="month">
+        <p class="flex">
+          <span>{{
+            Intl.DateTimeFormat("fr", { month: "long" }).format(
+              new Date((parseInt(index) + 1).toString())
+            )
+          }}</span>
+          <span
+            :class="{
+              profit: parseFloat(month) >= 0,
+              'text-danger': parseFloat(month) < 0,
+            }"
+            >{{ month.toFixed(2) }} USDT</span
+          >
+        </p>
+      </div>
+    </article>
+    <article class="article" v-else-if="weekHistory">
+      <div v-for="(week, index) in weeksGains" :key="week">
+        <p class="flex">
+          <span>Semaine {{ index }} : </span>
+          <span
+            :class="{
+              profit: parseFloat(week) >= 0,
+              'text-danger': parseFloat(week) < 0,
+            }"
+            >{{ week }}</span
+          >
+        </p>
+      </div>
+    </article>
+    <article class="article" v-else-if="dayHistory">
+      <div v-for="(day, index) in daysGains" :key="day">
+        <p class="flex">
+          <span>{{ index }}</span>
+          <span
+            :class="{
+              profit: parseFloat(day) >= 0,
+              'text-danger': parseFloat(day) < 0,
+            }"
+            >{{ day }} USDT</span
+          >
+        </p>
+      </div>
+    </article>
+  </section>
 </template>
 
 <style scoped lang="scss">
@@ -95,37 +113,38 @@ setupYear();
     text-align: center;
     padding: 1em;
   }
-  &__years {
-    list-style: none;
-    padding: 0;
-    li {
-      margin: 0.5em;
-      padding: 0.3em 0.5em;
-      background-color: var(--secondary-color);
-      cursor: pointer;
-      border-radius: 0.2em;
-      -webkit-box-shadow: 1px 1px 4px 0 var(--secondary-color);
-      box-shadow: 1px 1px 4px 0 var(--secondary-color);
-      transition: transform 100ms;
+}
+.yearGain {
+  margin: 1em;
+}
+.article {
+  background: var(--primary-color);
+  width: 95%;
+  padding: 0.8em;
+  border-radius: 0.2em;
+  margin: 1em;
 
-      &:hover {
-        transform: scale(1.05);
+  -webkit-box-shadow: 1px 1px 5px 0 var(--primary-color);
+  box-shadow: 1px 1px 5px 0 var(--primary-color);
+  div {
+    background: var(--secondary-color);
+    padding: 0.8em;
+    border-radius: 0.2em;
+    margin: 1em;
+    -webkit-box-shadow: 1px 1px 5px 0 var(--secondary-color);
+    box-shadow: 1px 1px 5px 0 var(--secondary-color);
+    p {
+      width: 100%;
+      span {
+        width: 50%;
+        text-align: start;
+        text-transform: uppercase;
       }
     }
-  }
-  &__filter {
-    list-style: none;
-    padding: 0;
-    li {
-      margin: 0.5em;
-      cursor: pointer;
-      padding: 0.3em 0.5em;
-      &:hover {
-        background-color: var(--secondary-color);
-        -webkit-box-shadow: 1px 1px 4px 0 var(--secondary-color);
-        box-shadow: 1px 1px 4px 0 var(--secondary-color);
-        border-radius: 0.2em;
-      }
+    &__tittle {
+      font-size: 1.5em;
+    }
+    &__date {
     }
   }
 }

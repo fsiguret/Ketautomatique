@@ -59,9 +59,9 @@ h6 {
   color: var(--validation-color);
 }
 .active {
-  background-color: var(--primary-color);
-  -webkit-box-shadow: 3px 4px 5px 0 var(--primary-color);
-  box-shadow: 3px 4px 5px 0 var(--primary-color);
+  background-color: var(--third-color);
+  -webkit-box-shadow: 1px 1px 5px 0 var(--third-color);
+  box-shadow: 1px 1px 5px 0 var(--third-color);
 }
 /**
  * VARIABLES
@@ -71,13 +71,14 @@ h6 {
   --error-color: #ff4757;
   --validation-color: #7cb342;
   --primary-color: #3d3d3d;
-  --secondary-color: #7d5fff;
+  --secondary-color: #575757;
+  --third-color: #7d5fff;
   --scrollbar-track: #575757;
   --scrollbar-thumb-hover: #8c72fc;
 }
 
 body {
-  background: var(--secondary-color);
+  background: var(--primary-color);
   font-family: "Roboto", sans-serif;
   color: var(--font-color-light);
   margin: 0;
@@ -96,7 +97,7 @@ body {
   background: var(--scrollbar-track);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--secondary-color);
+  background: var(--third-color);
   width: 0.5em;
   height: 5em;
   border-radius: 100vw;
@@ -114,16 +115,12 @@ header {
   justify-content: space-around;
   position: fixed;
   width: 100%;
-  background: var(--primary-color);
   z-index: 10;
-  -webkit-box-shadow: 0 4px 7px 0 var(--primary-color);
-  box-shadow: 0 4px 7px 0 var(--primary-color);
-}
-.nav {
+  background: var(--primary-color);
 }
 
 .route {
-  background: var(--secondary-color);
+  background: var(--third-color);
   padding: 0.6em 1em;
   margin: 1em;
   font-weight: bold;
